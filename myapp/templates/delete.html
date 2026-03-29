@@ -1,0 +1,206 @@
+{% load django_browser_reload %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Article</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fff7ed 0%, #f8fafc 100%);
+            color: #1f2937;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .delete-card {
+            width: 100%;
+            max-width: 620px;
+            background: #ffffff;
+            border: 1px solid #fed7aa;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        .warning-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fdba74;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 18px 0 10px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            margin: 0 0 24px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .article-preview {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            background: #f8fafc;
+            margin-bottom: 24px;
+        }
+
+        .article-preview h2 {
+            margin: 0 0 10px;
+            font-size: 22px;
+        }
+
+        .article-preview p {
+            margin: 0 0 10px;
+            color: #475569;
+        }
+
+        .article-meta {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        form {
+            margin: 0;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .delete-button {
+            background: #b91c1c;
+            color: #ffffff;
+        }
+
+        .delete-button:hover {
+            background: #991b1b;
+        }
+
+        .cancel-button {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .cancel-button:hover {
+            background: #cbd5e1;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding: 16px;
+            }
+
+            .delete-card {
+                margin-top: 20px;
+                padding: 24px 18px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .article-preview {
+                padding: 16px;
+            }
+
+            .article-preview h2 {
+                font-size: 20px;
+            }
+
+            .action-row {
+                flex-direction: column;
+            }
+
+            .action-row form,
+            .action-row button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .delete-card {
+                padding: 20px 14px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="delete-card">
+        <span class="warning-badge">Delete Confirmation</span>
+        <h1>Are you sure you want to delete this article?</h1>
+        <p class="subtitle">This action cannot be undone. Please confirm before removing the record.</p>
+
+        <div class="article-preview">
+            <h2>{{ articles.title }}</h2>
+            <p>{{ articles.description }}</p>
+            <div class="article-meta">{{ articles.author }} | {{ articles.date }}</div>
+        </div>
+
+        <div class="action-row">
+            <form action="" method="post">
+                {% csrf_token %}
+                <button class="delete-button" type="submit">Yes, Delete</button>
+            </form>
+
+            <form action="{% url 'articles' %}" method="get">
+                <button class="cancel-button" type="submit">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    {% django_browser_reload_script %}
+</body>
+</html>

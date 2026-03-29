@@ -1,0 +1,164 @@
+{% load django_browser_reload %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fbff, #e6f0ff);
+            color: #1f2937;
+        }
+
+        .marquee-box {
+            width: 100%;
+            overflow: hidden;
+            background: #1d4ed8;
+            color: #ffffff;
+            padding: 14px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 32px;
+            font-weight: bold;
+            padding-left: 100%;
+            animation: move 8s linear infinite;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 32px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .content-text {
+            font-size: 16px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .button-group {
+            margin-top: 28px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .button-group a {
+            text-decoration: none;
+        }
+
+        .button-group button {
+            border: none;
+            background: #2563eb;
+            color: #ffffff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-group button:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dbeafe;
+            margin: 28px 0;
+        }
+
+        @keyframes move {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .marquee-box {
+                padding: 12px 0;
+            }
+
+            .marquee-text {
+                font-size: 24px;
+                animation-duration: 10s;
+            }
+
+            .container {
+                margin: 24px 16px;
+                padding: 24px 20px;
+                border-radius: 16px;
+            }
+
+            .content-text {
+                font-size: 15px;
+                line-height: 1.7;
+                text-align: left;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group a,
+            .button-group button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .marquee-text {
+                font-size: 20px;
+            }
+
+            .container {
+                margin: 18px 12px;
+                padding: 20px 16px;
+            }
+
+            .button-group button {
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="marquee-box">
+        <div class="marquee-text">Write, Edit and Explore Articles Anytime</div>
+    </div>
+
+    <div class="container">
+        <p class="content-text">
+            Welcome to our website. In today’s fast-changing world, learning technology can open many opportunities. If you’re interested in coding, web development, or building a career in IT, this platform is a good place to start. We focus on explaining concepts in a simple and practical way so that beginners can understand without confusion. Here, you’ll learn Python, web development, and work on real projects to build your skills. The goal is not just to learn theory but to actually apply it. Stay consistent, practice regularly, and keep improving step by step. Start your learning journey today and build your future.
+        </p>
+
+        <hr>
+
+        <div class="button-group">
+            <a href="{% url 'form' %}"><button>Create Articles</button></a>
+            <a href="{% url 'articles' %}"><button>All Articles</button></a>
+        </div>
+    </div>
+
+    {% django_browser_reload_script %}
+</body>
+</html>
