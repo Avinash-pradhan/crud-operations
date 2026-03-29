@@ -718,9 +718,9 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
+            *:not(.marquee-text),
+            *:not(.marquee-text)::before,
+            *:not(.marquee-text)::after {
                 animation: none !important;
                 transition: none !important;
             }
@@ -729,7 +729,7 @@
 </head>
 <body>
     <div class="marquee-box" aria-label="Site notice">
-        <div class="marquee-text">Notice: write, edit, manage, and explore your articles anytime from one clean dashboard.</div>
+        <div class="marquee-text">Write with clarity, publish with confidence, and give every idea the space it deserves.</div>
     </div>
 
     <div class="site-shell">

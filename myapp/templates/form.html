@@ -412,13 +412,15 @@
             .card-header h2 { font-size: 1.7rem; }
         }
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation: none !important; transition: none !important; }
+            *:not(.marquee-text),
+            *:not(.marquee-text)::before,
+            *:not(.marquee-text)::after { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
     <div class="marquee-box" aria-label="Site notice">
-        <div class="marquee-text">Create polished articles faster with a cleaner writing workflow and a premium content dashboard.</div>
+        <div class="marquee-text">Shape your thoughts into meaningful articles with a smooth and focused writing experience.</div>
     </div>
     <div class="site-shell">
         <header class="site-nav">

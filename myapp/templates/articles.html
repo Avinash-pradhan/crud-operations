@@ -480,13 +480,15 @@
             .article-title { font-size: 1.35rem; }
         }
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation: none !important; transition: none !important; }
+            *:not(.marquee-text),
+            *:not(.marquee-text)::before,
+            *:not(.marquee-text)::after { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
     <div class="marquee-box" aria-label="Site notice">
-        <div class="marquee-text">Manage every article from one premium dashboard with edit, review, and delete actions in a cleaner layout.</div>
+        <div class="marquee-text">Review your work, refine your ideas, and keep every article organized in one elegant place.</div>
     </div>
     <div class="site-shell">
         <header class="site-nav">
