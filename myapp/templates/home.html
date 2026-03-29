@@ -5,138 +5,569 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <meta name="description" content="Create, manage, and explore articles with this Django CRUD application.">
+    <title>Home | Article Hub</title>
 
     <style>
+        :root {
+            --bg-top: #0f172a;
+            --bg-mid: #102542;
+            --bg-bottom: #f6efe3;
+            --panel-bg: rgba(255, 250, 242, 0.9);
+            --panel-hover: rgba(255, 252, 247, 0.96);
+            --text-main: #172033;
+            --text-soft: #475569;
+            --accent-dark: #b45309;
+            --accent-mid: #ea580c;
+            --accent-light: #fdba74;
+            --line-color: rgba(180, 83, 9, 0.2);
+            --shadow-soft: 0 22px 45px rgba(15, 23, 42, 0.18);
+            --shadow-strong: 0 28px 60px rgba(15, 23, 42, 0.22);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
             background:
-                linear-gradient(rgba(10, 25, 47, 0.72), rgba(29, 78, 216, 0.42)),
-                url("{% static 'images/book-workspace.jpg' %}") center/cover fixed no-repeat;
-            color: #1f2937;
+                radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 28%),
+                radial-gradient(circle at top right, rgba(96, 165, 250, 0.24), transparent 26%),
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 42%, var(--bg-bottom) 100%);
+            color: var(--text-main);
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            z-index: 0;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(10px);
+            opacity: 0.45;
+        }
+
+        body::before {
+            top: 120px;
+            left: -90px;
+            width: 240px;
+            height: 240px;
+            background: rgba(251, 191, 36, 0.22);
+        }
+
+        body::after {
+            right: -70px;
+            bottom: 90px;
+            width: 220px;
+            height: 220px;
+            background: rgba(59, 130, 246, 0.16);
         }
 
         .marquee-box {
+            position: sticky;
+            top: 0;
+            z-index: 2;
             width: 100%;
             overflow: hidden;
-            background: #1d4ed8;
+            background: linear-gradient(90deg, rgba(234, 88, 12, 0.96), rgba(190, 24, 93, 0.92), rgba(30, 64, 175, 0.92));
             color: #ffffff;
-            padding: 14px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            position: relative;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
             animation: slideDown 0.9s ease-out;
         }
 
         .marquee-text {
             display: inline-block;
+            min-width: 100%;
             white-space: nowrap;
-            font-size: 32px;
-            font-weight: bold;
+            font-size: clamp(1.25rem, 2vw + 0.75rem, 2rem);
+            font-weight: 700;
+            letter-spacing: 0.08em;
             padding-left: 100%;
-            animation: move 8s linear infinite;
+            color: #fffaf5;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+            will-change: transform;
+            animation: marqueeScroll 14s linear infinite;
+        }
+
+        .site-shell {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 18px 16px 0;
+        }
+
+        .site-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 16px 22px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(234, 88, 12, 0.92));
+            color: #fffaf5;
+            font-size: 1.1rem;
+            font-weight: 700;
+            box-shadow: 0 12px 24px rgba(234, 88, 12, 0.24);
+        }
+
+        .brand-copy strong,
+        .brand-copy span {
+            display: block;
+        }
+
+        .brand-copy strong {
+            color: #f8fafc;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+        }
+
+        .brand-copy span {
+            margin-top: 3px;
+            color: rgba(226, 232, 240, 0.86);
+            font-size: 0.85rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            transition: color 0.25s ease, transform 0.25s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus-visible {
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            padding: 56px 16px 24px;
         }
 
         .container {
             max-width: 1000px;
-            margin: 40px auto;
-            padding: 32px;
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 18px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            backdrop-filter: blur(4px);
+            margin: 0 auto;
+            padding: 40px;
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 28px;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(14px);
             animation: fadeUp 1s ease-out;
             transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
         }
 
         .container:hover {
             transform: translateY(-6px);
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
-            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-strong);
+            background: var(--panel-hover);
         }
 
-        .developer-name {
-            margin: auto 0 0;
-            padding: 18px 12px 22px;
-            color: #eff6ff;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            gap: 28px;
+            align-items: center;
+        }
+
+        .hero-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--accent-mid);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.26em;
             text-transform: uppercase;
-            text-align: center;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-            animation: fadeIn 1.4s ease-out;
+        }
+
+        h1 {
+            margin: 0;
+            max-width: 12ch;
+            font-size: clamp(2.3rem, 5vw, 4.4rem);
+            line-height: 1.02;
+            color: #10203c;
         }
 
         .content-text {
-            font-size: 16px;
-            line-height: 1.8;
-            text-align: justify;
+            margin: 18px 0 0;
+            max-width: 65ch;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text-soft);
+            text-align: left;
             animation: fadeIn 1.2s ease-out;
         }
 
+        .highlight {
+            color: var(--accent-mid);
+            font-weight: 700;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .stat-card {
+            min-width: 140px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .stat-number {
+            display: block;
+            color: #10203c;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            display: block;
+            margin-top: 6px;
+            color: var(--text-soft);
+            font-size: 0.92rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--line-color);
+            margin: 30px 0;
+        }
+
+        .visual-panel {
+            position: relative;
+            min-height: 430px;
+            border-radius: 28px;
+            overflow: hidden;
+            background:
+                linear-gradient(180deg, rgba(15, 23, 42, 0.1), rgba(15, 23, 42, 0.2)),
+                linear-gradient(140deg, #fff7ed, #ffedd5 42%, #dbeafe 100%);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .visual-panel::before {
+            content: "";
+            position: absolute;
+            inset: 18px;
+            border-radius: 24px;
+            border: 1px dashed rgba(180, 83, 9, 0.2);
+        }
+
+        .shape-orb {
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(2px);
+        }
+
+        .shape-orb.orb-one {
+            top: 34px;
+            right: 36px;
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle at 30% 30%, rgba(251, 191, 36, 0.95), rgba(234, 88, 12, 0.75));
+        }
+
+        .shape-orb.orb-two {
+            bottom: 34px;
+            left: 32px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 30% 30%, rgba(96, 165, 250, 0.85), rgba(37, 99, 235, 0.62));
+        }
+
+        .shape-orb.orb-three {
+            top: 110px;
+            left: 52px;
+            width: 62px;
+            height: 62px;
+            background: radial-gradient(circle at 30% 30%, rgba(244, 114, 182, 0.85), rgba(190, 24, 93, 0.62));
+        }
+
+        .visual-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
+        }
+
+        .editor-window {
+            top: 54px;
+            left: 50%;
+            width: 78%;
+            padding: 16px;
+            border-radius: 22px;
+            transform: translateX(-50%) rotate(-4deg);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 7px;
+        }
+
+        .window-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .window-dots span:nth-child(1) {
+            background: #fb7185;
+        }
+
+        .window-dots span:nth-child(2) {
+            background: #fbbf24;
+        }
+
+        .window-dots span:nth-child(3) {
+            background: #34d399;
+        }
+
+        .window-title {
+            margin: 14px 0 18px;
+            color: #10203c;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .line {
+            height: 10px;
+            margin-bottom: 10px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.24), rgba(234, 88, 12, 0.3));
+        }
+
+        .line.short {
+            width: 54%;
+        }
+
+        .line.medium {
+            width: 72%;
+        }
+
+        .line.long {
+            width: 88%;
+        }
+
+        .mini-card {
+            right: 34px;
+            bottom: 42px;
+            width: 46%;
+            padding: 18px;
+            border-radius: 20px;
+        }
+
+        .mini-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(234, 88, 12, 0.12);
+            color: var(--accent-dark);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .mini-card h2 {
+            margin: 14px 0 8px;
+            color: #10203c;
+            font-size: 1.1rem;
+        }
+
+        .mini-card p {
+            margin: 0;
+            color: var(--text-soft);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
         .button-group {
-            margin-top: 28px;
             display: flex;
             gap: 14px;
             flex-wrap: wrap;
         }
 
-        .button-group a {
-            text-decoration: none;
-        }
-
-        .button-group button {
-            border: none;
-            background: #2563eb;
+        .button-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 170px;
+            padding: 14px 24px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--accent-mid), var(--accent-dark));
             color: #ffffff;
-            padding: 12px 22px;
-            border-radius: 10px;
             font-size: 15px;
             font-weight: 600;
-            cursor: pointer;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            box-shadow: 0 14px 30px rgba(234, 88, 12, 0.22);
             position: relative;
             overflow: hidden;
-            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
         }
 
-        .button-group button::before {
+        .button-link::before {
             content: "";
             position: absolute;
-            top: 0;
+            inset: 0;
             left: -120%;
-            width: 120%;
-            height: 100%;
             background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.38), transparent);
             transition: left 0.45s ease;
         }
 
-        .button-group button:hover {
-            background: #1e40af;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.28);
+        .button-link:hover,
+        .button-link:focus-visible {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 34px rgba(234, 88, 12, 0.28);
+            filter: brightness(1.05);
         }
 
-        .button-group button:hover::before {
+        .button-link:hover::before,
+        .button-link:focus-visible::before {
             left: 100%;
         }
 
-        hr {
-            border: none;
-            border-top: 1px solid #dbeafe;
-            margin: 28px 0;
+        .button-link:focus-visible {
+            outline: 3px solid rgba(217, 160, 102, 0.4);
+            outline-offset: 3px;
         }
 
-        @keyframes move {
+        .developer-name {
+            margin: 0;
+            color: #cbd5e1;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .site-footer {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            padding: 10px 16px 28px;
+        }
+
+        .footer-card {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 22px 24px;
+            border-radius: 24px;
+            background: rgba(10, 18, 33, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+            backdrop-filter: blur(14px);
+        }
+
+        .footer-title {
+            margin: 0 0 6px;
+            color: #f8fafc;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .footer-text {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #e2e8f0;
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover,
+        .footer-links a:focus-visible {
+            color: #fdba74;
+        }
+
+        @keyframes marqueeScroll {
             from {
                 transform: translateX(0);
             }
 
             to {
-                transform: translateX(-100%);
+                transform: translateX(-180%);
             }
         }
 
@@ -179,15 +610,27 @@
                 padding: 12px 0;
             }
 
-            .marquee-text {
-                font-size: 24px;
-                animation-duration: 10s;
+            main {
+                padding-top: 28px;
             }
 
             .container {
-                margin: 24px 16px;
-                padding: 24px 20px;
-                border-radius: 16px;
+                padding: 28px 22px;
+                border-radius: 22px;
+            }
+
+            .site-nav,
+            .footer-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
             }
 
             .content-text {
@@ -196,29 +639,81 @@
                 text-align: left;
             }
 
+            .visual-panel {
+                min-height: 360px;
+            }
+
+            .editor-window {
+                width: 84%;
+            }
+
+            .mini-card {
+                width: 52%;
+            }
+
             .button-group {
                 flex-direction: column;
             }
 
-            .button-group a,
-            .button-group button {
+            .button-link {
                 width: 100%;
             }
         }
 
         @media (max-width: 480px) {
-            .marquee-text {
-                font-size: 20px;
-            }
-
             .container {
-                margin: 18px 12px;
                 padding: 20px 16px;
             }
 
-            .button-group button {
-                padding: 12px 18px;
-                font-size: 14px;
+            .site-shell {
+                padding-top: 14px;
+            }
+
+            .site-nav {
+                padding: 14px 16px;
+                border-radius: 18px;
+            }
+
+            .brand-mark {
+                width: 42px;
+                height: 42px;
+                border-radius: 14px;
+            }
+
+            h1 {
+                max-width: none;
+                font-size: clamp(2rem, 9vw, 2.8rem);
+            }
+
+            .stats-row {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                width: 100%;
+            }
+
+            .visual-panel {
+                min-height: 320px;
+                border-radius: 22px;
+            }
+
+            .editor-window {
+                top: 34px;
+                width: 86%;
+                padding: 14px;
+            }
+
+            .mini-card {
+                right: 18px;
+                bottom: 22px;
+                width: 58%;
+                padding: 14px;
+            }
+
+            .developer-name {
+                font-size: 12px;
+                letter-spacing: 0.08em;
             }
         }
 
@@ -233,24 +728,108 @@
     </style>
 </head>
 <body>
-    <div class="marquee-box">
-        <div class="marquee-text">Write, Edit and Explore Articles Anytime</div>
+    <div class="marquee-box" aria-label="Site notice">
+        <div class="marquee-text">Notice: write, edit, manage, and explore your articles anytime from one clean dashboard.</div>
     </div>
 
-    <div class="container">
-        <p class="content-text">
-            Welcome to our website. In today’s fast-changing world, learning technology can open many opportunities. If you’re interested in coding, web development, or building a career in IT, this platform is a good place to start. We focus on explaining concepts in a simple and practical way so that beginners can understand without confusion. Here, you’ll learn Python, web development, and work on real projects to build your skills. The goal is not just to learn theory but to actually apply it. Stay consistent, practice regularly, and keep improving step by step. Start your learning journey today and build your future.
-        </p>
+    <div class="site-shell">
+        <header class="site-nav">
+            <div class="brand-block">
+                <div class="brand-mark">AP</div>
+                <div class="brand-copy">
+                    <strong>Article Hub</strong>
+                    <span>Premium writing workspace</span>
+                </div>
+            </div>
 
-        <hr>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="{% url 'home' %}">Home</a>
+                <!-- <a href="{% url 'form' %}">Create</a> -->
+                <a href="{% url 'articles' %}">Articles</a>
+                <a class="nav-cta" href="{% url 'form' %}">Start Writing</a>
+            </nav>
+        </header>
+    </div>
 
-        <div class="button-group">
-            <a href="{% url 'form' %}"><button>Create Articles</button></a>
-            <a href="{% url 'articles' %}"><button>All Articles</button></a>
+    <main>
+        <section class="container">
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow">Learn, Build, Publish</p>
+                    <h1>Start your article journey with confidence.</h1>
+
+                    <p class="content-text">
+                        Welcome to our website. In today's fast-changing world, learning technology can open many opportunities.
+                        If you're interested in coding, web development, or building a career in IT, this platform is a good
+                        place to start. We explain concepts in a simple and practical way so beginners can learn without
+                        confusion. Here, you can explore Python, web development, and real projects that help you build useful
+                        skills. The goal is not just theory, but <span class="highlight">real practice with steady growth</span>.
+                        Stay consistent, keep learning step by step, and build your future.
+                    </p>
+
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <span class="stat-number">Create</span>
+                            <span class="stat-label">Draft your next article quickly</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">Manage</span>
+                            <span class="stat-label">Keep every update in one place</span>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="button-group">
+                        <a class="button-link" href="{% url 'form' %}">Create Articles</a>
+                        <a class="button-link" href="{% url 'articles' %}">All Articles</a>
+                    </div>
+                </div>
+
+                <div class="visual-panel" aria-hidden="true">
+                    <div class="shape-orb orb-one"></div>
+                    <div class="shape-orb orb-two"></div>
+                    <div class="shape-orb orb-three"></div>
+
+                    <div class="visual-card editor-window">
+                        <div class="window-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <p class="window-title">Article Editor</p>
+                        <div class="line long"></div>
+                        <div class="line medium"></div>
+                        <div class="line long"></div>
+                        <div class="line short"></div>
+                    </div>
+
+                    <div class="visual-card mini-card">
+                        <span class="mini-badge">Featured Flow</span>
+                        <h2>Write with clarity</h2>
+                        <p>Draft, revise, and organize your content in a cleaner, focused workspace.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-card">
+            <div>
+                <p class="footer-title">Build articles with a cleaner workflow.</p>
+                <p class="footer-text">Create, update, and organize content from one elegant Django CRUD interface.</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'articles' %}">Explore Articles</a>
+                <a href="{% url 'form' %}">Create New</a>
+            </div>
+
+            <p class="developer-name">Developed by Avinash Pradhan</p>
         </div>
-    </div>
-
-    <p class="developer-name">Developed by Avinash Pradhan</p>
+    </footer>
 
     {% django_browser_reload_script %}
 </body>

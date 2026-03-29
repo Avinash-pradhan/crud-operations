@@ -4,251 +4,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form</title>
+    <meta name="description" content="Create a new article in the Article Hub workspace.">
+    <title>Create Article | Article Hub</title>
     <style>
+        :root {
+            --bg-top: #0f172a;
+            --bg-mid: #102542;
+            --bg-bottom: #f6efe3;
+            --panel-bg: rgba(255, 250, 242, 0.9);
+            --panel-soft: rgba(255, 255, 255, 0.62);
+            --text-main: #172033;
+            --text-soft: #475569;
+            --accent-dark: #b45309;
+            --accent-mid: #ea580c;
+            --accent-light: #fdba74;
+            --line-color: rgba(180, 83, 9, 0.2);
+            --shadow-soft: 0 22px 45px rgba(15, 23, 42, 0.18);
+            --shadow-strong: 0 28px 60px rgba(15, 23, 42, 0.22);
+        }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
             min-height: 100vh;
-            background: #f5f7fb;
-            color: #1f2937;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+            background:
+                radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 28%),
+                radial-gradient(circle at top right, rgba(96, 165, 250, 0.24), transparent 26%),
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 42%, var(--bg-bottom) 100%);
+            color: var(--text-main);
         }
-
-        .form-wrapper {
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            z-index: 0;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(10px);
+            opacity: 0.45;
+        }
+        body::before {
+            top: 120px;
+            left: -90px;
+            width: 240px;
+            height: 240px;
+            background: rgba(251, 191, 36, 0.22);
+        }
+        body::after {
+            right: -70px;
+            bottom: 90px;
+            width: 220px;
+            height: 220px;
+            background: rgba(59, 130, 246, 0.16);
+        }
+        .marquee-box {
+            position: sticky;
+            top: 0;
+            z-index: 3;
             width: 100%;
-            max-width: 760px;
-            margin: 48px auto;
-            padding: 0 20px;
+            overflow: hidden;
+            background: linear-gradient(90deg, rgba(234, 88, 12, 0.96), rgba(190, 24, 93, 0.92), rgba(30, 64, 175, 0.92));
+            color: #ffffff;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
         }
-
-        .form-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        .marquee-text {
+            display: inline-block;
+            min-width: 100%;
+            white-space: nowrap;
+            font-size: clamp(1rem, 1.4vw + 0.7rem, 1.4rem);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding-left: 100%;
+            color: #fffaf5;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+            animation: marqueeScroll 14s linear infinite;
         }
-
-        .navbar {
+        .site-shell {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 18px 16px 0;
+        }
+        .site-nav {
             display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e5e7eb;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 16px 22px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
         }
-
+        .brand-block { display: flex; align-items: center; gap: 14px; }
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(234, 88, 12, 0.92));
+            color: #fffaf5;
+            font-size: 1.1rem;
+            font-weight: 700;
+            box-shadow: 0 12px 24px rgba(234, 88, 12, 0.24);
+        }
+        .brand-copy strong,
+        .brand-copy span { display: block; }
+        .brand-copy strong {
+            color: #f8fafc;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+        }
+        .brand-copy span {
+            margin-top: 3px;
+            color: rgba(226, 232, 240, 0.86);
+            font-size: 0.85rem;
+        }
         .nav-links {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 12px;
             flex-wrap: wrap;
         }
-
         .nav-links a {
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            font-weight: 600;
             text-decoration: none;
-            color: #334155;
-            border: 1px solid #d1d5db;
-            background: #ffffff;
-            padding: 10px 16px;
+        }
+        .nav-links a:hover,
+        .nav-links a:focus-visible { color: #ffffff; }
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 18px;
             border-radius: 999px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.16);
         }
-
-        .nav-links a:hover {
-            border-color: #2563eb;
-            color: #2563eb;
-            background: #eff6ff;
-        }
-
-        h1 {
-            margin: 0 0 8px;
-            font-size: 30px;
-        }
-
-        .subtitle {
-            color: #6b7280;
-            margin: 0 0 20px;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 20px 0 24px;
-        }
-
-        fieldset {
-            border: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        form {
-            display: grid;
-            gap: 16px;
-        }
-
-        label {
-            font-weight: 600;
-            margin-bottom: -10px;
-        }
-
-        input {
+        main {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 15px;
-            box-sizing: border-box;
+            padding: 40px 16px 24px;
+        }
+        .page-grid {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+            gap: 26px;
+            align-items: start;
+        }
+        .intro-card,
+        .form-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 28px;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(14px);
+        }
+        .intro-card {
+            padding: 34px;
+            position: sticky;
+            top: 94px;
+        }
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--accent-mid);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+        }
+        h1 {
+            margin: 0;
+            font-size: clamp(2.2rem, 4vw, 4rem);
+            line-height: 1.04;
+            color: #10203c;
+        }
+        .intro-text {
+            margin: 18px 0 0;
+            color: var(--text-soft);
+            font-size: 1rem;
+            line-height: 1.85;
+        }
+        .feature-list {
+            display: grid;
+            gap: 14px;
+            margin-top: 24px;
+        }
+        .feature-item {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: var(--panel-soft);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .feature-item strong {
+            display: block;
+            color: #10203c;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+        .feature-item span {
+            color: var(--text-soft);
+            font-size: 0.94rem;
+            line-height: 1.6;
+        }
+        .form-card { padding: 34px; }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: start;
+            margin-bottom: 24px;
+        }
+        .card-header h2 {
+            margin: 0;
+            color: #10203c;
+            font-size: 2rem;
+        }
+        .card-header p {
+            margin: 10px 0 0;
+            color: var(--text-soft);
+            line-height: 1.7;
+        }
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(234, 88, 12, 0.12);
+            color: var(--accent-dark);
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .success-message {
+            padding: 18px 20px;
+            border-radius: 18px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.22);
+            color: #166534;
+            font-weight: 700;
+        }
+        form { display: grid; gap: 18px; }
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .field { display: grid; gap: 8px; }
+        .field.full { grid-column: 1 / -1; }
+        label {
+            color: #10203c;
+            font-size: 0.96rem;
+            font-weight: 700;
+        }
+        input,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 16px;
+            font: inherit;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.72);
             outline: none;
-            background: #f9fafb;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
         }
-
-        input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-            background: #ffffff;
+        textarea {
+            min-height: 150px;
+            resize: vertical;
         }
-
-        .submit-button {
-            margin-top: 8px;
-            border: none;
-            border-radius: 10px;
-            padding: 13px 18px;
-            background: #0f172a;
-            color: #ffffff;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.2s ease;
-        }
-
-        .submit-button:hover {
-            background: #1e293b;
+        input:focus,
+        textarea:focus {
+            border-color: rgba(234, 88, 12, 0.5);
+            box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.12);
+            background: rgba(255, 255, 255, 0.92);
             transform: translateY(-1px);
         }
-
-        .success-message {
-            text-align: left;
-            color: #166534;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 12px;
-            padding: 16px;
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-top: 6px;
+        }
+        .submit-button,
+        .ghost-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 170px;
+            padding: 14px 24px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+        }
+        .submit-button {
+            border: none;
+            background: linear-gradient(135deg, var(--accent-mid), var(--accent-dark));
+            color: #ffffff;
+            box-shadow: 0 14px 30px rgba(234, 88, 12, 0.22);
+        }
+        .ghost-link {
+            border: 1px solid rgba(16, 32, 60, 0.12);
+            background: rgba(255, 255, 255, 0.55);
+            color: #10203c;
+        }
+        .submit-button:hover,
+        .ghost-link:hover,
+        .submit-button:focus-visible,
+        .ghost-link:focus-visible {
+            transform: translateY(-2px);
+            filter: brightness(1.03);
+        }
+        .site-footer {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            padding: 10px 16px 28px;
+        }
+        .footer-card {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 22px 24px;
+            border-radius: 24px;
+            background: rgba(10, 18, 33, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+            backdrop-filter: blur(14px);
+        }
+        .footer-title {
+            margin: 0 0 6px;
+            color: #f8fafc;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .footer-text {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .footer-links a,
+        .developer-name {
+            color: #e2e8f0;
+            font-size: 0.88rem;
             font-weight: 600;
+            text-decoration: none;
         }
-
+        .footer-links a:hover,
+        .footer-links a:focus-visible { color: #fdba74; }
+        .developer-name {
+            margin: 0;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        @keyframes marqueeScroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-180%); }
+        }
+        @media (max-width: 900px) {
+            .page-grid { grid-template-columns: 1fr; }
+            .intro-card { position: static; }
+        }
         @media (max-width: 768px) {
-            .form-wrapper {
-                margin: 28px auto;
-                padding: 0 14px;
-            }
-
-            .form-card {
-                padding: 22px 16px;
-                border-radius: 14px;
-            }
-
-            .navbar {
-                justify-content: stretch;
-                margin-bottom: 22px;
-            }
-
-            .nav-links {
-                width: 100%;
-            }
-
-            .nav-links a {
-                flex: 1 1 180px;
-                text-align: center;
-            }
-
-            .nav-links a button {
-                width: 100%;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .subtitle,
-            .success-message {
-                font-size: 14px;
-            }
-
-            form {
-                gap: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .form-wrapper {
-                margin: 18px auto;
-                padding: 0 10px;
-            }
-
-            .form-card {
-                padding: 18px 14px;
-            }
-
-            .nav-links a {
-                flex-basis: 100%;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            input,
+            .site-nav,
+            .footer-card,
+            .card-header { flex-direction: column; align-items: flex-start; }
+            .nav-links { width: 100%; }
+            .field-grid { grid-template-columns: 1fr; }
+            .intro-card,
+            .form-card { padding: 24px 20px; border-radius: 22px; }
             .submit-button,
-            .nav-links a button {
-                font-size: 14px;
-            }
+            .ghost-link { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .site-shell { padding-top: 14px; }
+            .site-nav { padding: 14px 16px; border-radius: 18px; }
+            .brand-mark { width: 42px; height: 42px; border-radius: 14px; }
+            main { padding-top: 28px; }
+            .intro-card,
+            .form-card { padding: 20px 16px; }
+            h1 { font-size: clamp(2rem, 9vw, 2.8rem); }
+            .card-header h2 { font-size: 1.7rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="form-wrapper">
-        <div class="form-card">
-            <div class="navbar">
-                <div class="nav-links">
-                    <a href="{% url 'home' %}"><button type="button">Home</button></a>
-                    <a href="{% url 'articles' %}"><button type="button">All Articles</button></a>
+    <div class="marquee-box" aria-label="Site notice">
+        <div class="marquee-text">Create polished articles faster with a cleaner writing workflow and a premium content dashboard.</div>
+    </div>
+    <div class="site-shell">
+        <header class="site-nav">
+            <div class="brand-block">
+                <div class="brand-mark">AP</div>
+                <div class="brand-copy">
+                    <strong>Article Hub</strong>
+                    <span>Premium writing workspace</span>
                 </div>
             </div>
-
-            <h1>Create Articles</h1>
-            <p class="subtitle">Fill out the details below to add a new article.</p>
-            <hr>
-
-            {% if submitted %}
-                <div class="success-message">Thanks for your feedback.....!</div>
-            {% else %}
-                <fieldset>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'articles' %}">Articles</a>
+                <a class="nav-cta" href="{% url 'form' %}">Create</a>
+            </nav>
+        </header>
+    </div>
+    <main>
+        <div class="page-grid">
+            <section class="intro-card">
+                <p class="eyebrow">Create Article</p>
+                <h1>Turn your ideas into well-structured content.</h1>
+                <p class="intro-text">Use this workspace to add a new article with a clear title, strong description, author details, and publish date. The layout now matches the premium theme from your home page so the whole app feels consistent.</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <strong>Clear workflow</strong>
+                        <span>Move from idea to published entry in one smooth form experience.</span>
+                    </div>
+                    <div class="feature-item">
+                        <strong>Focused writing</strong>
+                        <span>Clean spacing and stronger form hierarchy reduce visual clutter while you type.</span>
+                    </div>
+                </div>
+            </section>
+            <section class="form-card">
+                <div class="card-header">
+                    <div>
+                        <h2>New Article Form</h2>
+                        <p>Fill in the fields below to save a fresh article into your collection.</p>
+                    </div>
+                    <span class="status-chip">Live Entry</span>
+                </div>
+                {% if submitted %}
+                    <div class="success-message">Article submitted successfully. You can create another one anytime.</div>
+                {% else %}
                     <form action="" method="post">
                         {% csrf_token %}
-                        <label for="title">Title</label>
-                        <input type="text" name="title" id="title" placeholder="Enter Title" required>
-
-                        <label for="description">Description</label>
-                        <input type="text" name="description" id="description" placeholder="Enter Description" required>
-
-                        <label for="author">Author</label>
-                        <input type="text" name="author" id="author" placeholder="Enter Name" required>
-
-                        <label for="date">Date</label>
-                        <input type="date" name="date" id="date" required>
-
-                        <button class="submit-button" type="submit">Submit</button>
+                        <div class="field-grid">
+                            <div class="field full">
+                                <label for="title">Title</label>
+                                <input type="text" name="title" id="title" placeholder="Enter article title" required>
+                            </div>
+                            <div class="field full">
+                                <label for="description">Description</label>
+                                <textarea name="description" id="description" placeholder="Write a short article description" required></textarea>
+                            </div>
+                            <div class="field">
+                                <label for="author">Author</label>
+                                <input type="text" name="author" id="author" placeholder="Enter author name" required>
+                            </div>
+                            <div class="field">
+                                <label for="date">Date</label>
+                                <input type="date" name="date" id="date" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="submit-button" type="submit">Publish Article</button>
+                            <a class="ghost-link" href="{% url 'articles' %}">View All Articles</a>
+                        </div>
                     </form>
-                </fieldset>
-            {% endif %}
+                {% endif %}
+            </section>
         </div>
-    </div>
-
+    </main>
+    <footer class="site-footer">
+        <div class="footer-card">
+            <div>
+                <p class="footer-title">Write better content with a cleaner interface.</p>
+                <p class="footer-text">Create, review, and manage every article from one premium CRUD experience.</p>
+            </div>
+            <div class="footer-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'articles' %}">Explore Articles</a>
+            </div>
+            <p class="developer-name">Developed by Avinash Pradhan</p>
+        </div>
+    </footer>
     {% django_browser_reload_script %}
 </body>
 </html>
